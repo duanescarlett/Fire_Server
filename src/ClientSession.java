@@ -7,6 +7,7 @@ import java.nio.channels.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -59,10 +60,6 @@ class ClientSession {
 
             System.out.println("sending back " + buf.position() + " bytes");
 
-            // turn this bus right around and send it back!
-//            buf.flip();
-//            chan.write(buf);
-            //output("This test was passed");
             buf.flip();
             byte[] bytes = new byte[buf.limit()];
             buf.get(bytes);
@@ -100,21 +97,41 @@ class ClientSession {
                 resultSet.close();
 
                 ArrayList allUsers = this.user.allUsers();
+                ArrayList allNotifications = this.user.allNotifications();
 
                 output("Username:" + this.username);
                 System.out.println("(MainServer.java): _> " + this.username);
                 //Object[] arr = allUsers.toArray();
 
-                for(int i = 0; i < allUsers.size(); i++){ // Send user one by one to client from array list
+                for(int i = 0; i < allUsers.size(); ++i){ // Send user one by one to client from array list
                     output("UserList:" + allUsers.get(i).toString());
                     System.out.println("UserList:" + allUsers.get(i).toString());
                     try {
                         Thread.sleep(100);
+                        //wait(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     allUsers.remove(i);
                 }
+                allUsers.clear();
+
+                for(int i = 0; i < allNotifications.size(); ++i){
+                    System.out.println("Notification:" + allNotifications.get(i).toString());
+                    output("Notification:" + allNotifications.get(i).toString());
+
+                    try{
+                        Thread.sleep(100);
+                        //wait(100);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                    allNotifications.remove(i);
+                }
+                allNotifications.clear();
+
+
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -133,8 +150,13 @@ class ClientSession {
         }
         else if (stringPeices[0].equals("Chat")) {
             System.out.println("\n(ClientSession.java): This is a chat message -> " + stringPeices[1]);
-            System.out.println("(ClientSession.java): _> I am so happy the this works");
-            System.out.println("(ClientSession.java): _> now for DB insert");
+            //System.out.println("(ClientSession.java): _> I am so happy the this works");
+            //System.out.println("(ClientSession.java): _> now for DB insert");
+            Date date = new Date();
+
+            String[] st = stringPeices[1].split(":");
+
+            this.user.insert("INSERT INTO fire_brigade.message (datetime, message, sender, receiver, seen) VALUES('"+date.toString()+"', '"+stringPeices[1]+"', 'fireman', '"+st[1]+"', 'no')") ;
             try {
                 output("Chat:" + stringPeices[1]);
             } catch (IOException e) {
@@ -145,8 +167,32 @@ class ClientSession {
         else if (stringPeices[0].equals("Update")) {
             this.user.insert(stringPeices[1]);
         }
+        else if (stringPeices[0].equals("Notification")){
+            this.user.insert(stringPeices[1]);
+        }
+        else if (stringPeices[0].equals("Messages")){
+            ArrayList allMessages = this.user.allMessages(this.username);
+            //stringPeices[1].split(":");
+
+            for(int i = 0; i < allMessages.size(); ++i){ // Send user one by one to client from array list
+                try {
+                    output("Messages:" + allMessages.get(i).toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Messages:" + allMessages.get(i).toString());
+                try {
+                    Thread.sleep(100);
+                    //wait(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                allMessages.remove(i);
+            }
+            allMessages.clear();
+        }
         else {
-            System.out.println("\n(ClientSession.java): I need to get the string parsing right");
+            //System.out.println("\n(ClientSession.java): I need to get the string parsing right");
         }
     }
 

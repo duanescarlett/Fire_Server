@@ -17,6 +17,30 @@ public class UserMod {
         super();
     }
 
+    public ArrayList allNotifications(){
+
+        ArrayList<String> arrayList = new ArrayList<String>();
+
+        try {
+            // 3. Execute SQL query
+            db.sql =  this.db.mySql.executeQuery("SELECT * FROM notification");
+
+            // 4. Process the result set
+
+            while (this.db.sql.next()) {
+                arrayList.add(this.db.sql.getString("category"));
+            }
+
+            return arrayList;
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return arrayList;
+    }
+
     public ArrayList allUsers(){
 
         ArrayList<String> arrayList = new ArrayList<String>();
@@ -24,6 +48,30 @@ public class UserMod {
         try {
             // 3. Execute SQL query
             db.sql =  this.db.mySql.executeQuery("SELECT * FROM profile");
+
+            // 4. Process the result set
+
+            while (this.db.sql.next()) {
+                arrayList.add(this.db.sql.getString("username"));
+            }
+
+            return arrayList;
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return arrayList;
+    }
+
+    public ArrayList allMessages(String s){
+
+        ArrayList<String> arrayList = new ArrayList<String>();
+
+        try {
+            // 3. Execute SQL query
+            db.sql =  this.db.mySql.executeQuery("SELECT * FROM message WHERE receiver='"+s+"'");
 
             // 4. Process the result set
 
