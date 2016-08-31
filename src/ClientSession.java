@@ -174,7 +174,7 @@ class ClientSession {
             ArrayList allMessages = this.user.allMessages(this.username);
             //stringPeices[1].split(":");
 
-            for(int i = 0; i < allMessages.size(); ++i){ // Send user one by one to client from array list
+            for(int i = 0; i > allMessages.size(); ++i){ // Send user one by one to client from array list
                 try {
                     output("Messages:" + allMessages.get(i).toString());
                 } catch (IOException e) {
@@ -182,8 +182,8 @@ class ClientSession {
                 }
                 System.out.println("Messages:" + allMessages.get(i).toString());
                 try {
-                    Thread.sleep(100);
-                    //wait(100);
+                    //Thread.sleep(100);
+                    wait(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -192,7 +192,8 @@ class ClientSession {
             allMessages.clear();
         }
         else {
-            //System.out.println("\n(ClientSession.java): I need to get the string parsing right");
+            //System.out.println("Silence");
+            // No data came from the port
         }
     }
 
