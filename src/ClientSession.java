@@ -103,30 +103,21 @@ class ClientSession {
                 System.out.println("(MainServer.java): _> " + this.username);
                 //Object[] arr = allUsers.toArray();
 
-                for(int i = 0; i < allUsers.size(); ++i){ // Send user one by one to client from array list
+                for(int i = 0; i < allUsers.size(); i++){ // Send user one by one to client from array list
                     output("UserList:" + allUsers.get(i).toString());
                     System.out.println("UserList:" + allUsers.get(i).toString());
-                    try {
-                        Thread.sleep(100);
-                        //wait(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Thread.sleep(200);
+                    //wait(100);
                     allUsers.remove(i);
                 }
                 allUsers.clear();
 
-                for(int i = 0; i < allNotifications.size(); ++i){
+                for(int i = 0; i < allNotifications.size(); i++){
                     System.out.println("Notification:" + allNotifications.get(i).toString());
                     output("Notification:" + allNotifications.get(i).toString());
 
-                    try{
-                        Thread.sleep(100);
-                        //wait(100);
-                    }
-                    catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
+                    Thread.sleep(100);
+                    //wait(100);
                     allNotifications.remove(i);
                 }
                 allNotifications.clear();
@@ -136,6 +127,8 @@ class ClientSession {
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -150,11 +143,9 @@ class ClientSession {
         }
         else if (stringPeices[0].equals("Chat")) {
             System.out.println("\n(ClientSession.java): This is a chat message -> " + stringPeices[1]);
-            //System.out.println("(ClientSession.java): _> I am so happy the this works");
-            //System.out.println("(ClientSession.java): _> now for DB insert");
             Date date = new Date();
 
-            String[] st = stringPeices[1].split(":");
+            String[] st = stringPeices[1].split(":", 2);
 
             this.user.insert("INSERT INTO fire_brigade.message (datetime, message, sender, receiver, seen) VALUES('"+date.toString()+"', '"+stringPeices[1]+"', 'fireman', '"+st[1]+"', 'no')") ;
             try {
@@ -174,27 +165,22 @@ class ClientSession {
             ArrayList allMessages = this.user.allMessages(this.username);
             //stringPeices[1].split(":");
 
-            for(int i = 0; i > allMessages.size(); ++i){ // Send user one by one to client from array list
+            for(int i = 0; i < allMessages.size(); ++i){ // Send user one by one to client from array list
                 try {
                     output("Messages:" + allMessages.get(i).toString());
+                    wait(100);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                System.out.println("Messages:" + allMessages.get(i).toString());
-                try {
-                    //Thread.sleep(100);
-                    wait(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                System.out.println("Messages:" + allMessages.get(i).toString());
+
                 allMessages.remove(i);
             }
             allMessages.clear();
         }
-        else {
-            //System.out.println("Silence");
-            // No data came from the port
-        }
+
     }
 
 }
