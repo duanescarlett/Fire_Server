@@ -1,9 +1,10 @@
 import model.UserMod;
 
 import java.io.IOException;
-import java.net.*;
-import java.nio.*;
-import java.nio.channels.*;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,7 +67,8 @@ class ClientSession {
             String str = new String(bytes);
             parser(str);
             buf.clear();
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             disconnect();
             t.printStackTrace();
         }
@@ -106,9 +108,9 @@ class ClientSession {
                 for(int i = 0; i < allUsers.size(); i++){ // Send user one by one to client from array list
                     output("UserList:" + allUsers.get(i).toString());
                     System.out.println("UserList:" + allUsers.get(i).toString());
-                    Thread.sleep(200);
+                    Thread.sleep(100);
                     //wait(100);
-                    allUsers.remove(i);
+                    //allUsers.remove(i);
                 }
                 allUsers.clear();
 
@@ -118,7 +120,7 @@ class ClientSession {
 
                     Thread.sleep(100);
                     //wait(100);
-                    allNotifications.remove(i);
+                    //allNotifications.remove(i);
                 }
                 allNotifications.clear();
 
