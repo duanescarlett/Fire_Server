@@ -124,7 +124,22 @@ class ClientSession {
                 }
                 allNotifications.clear();
 
+                ArrayList allMessages = this.user.allMessages(this.username);
 
+                for(int i = 0; i < allMessages.size(); ++i){ // Send user one by one to client from array list
+                    try {
+                        output("Messages:" + allMessages.get(i).toString());
+                        Thread.sleep(100);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Messages:" + allMessages.get(i).toString());
+
+                    allMessages.remove(i);
+                }
+                allMessages.clear();
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -147,7 +162,7 @@ class ClientSession {
             System.out.println("\n(ClientSession.java): This is a chat message -> " + stringPeices[1]);
             Date date = new Date();
 
-            String[] st = stringPeices[1].split(":", 2);
+            String[] st = stringPeices[1].split(":");
 
             this.user.insert("INSERT INTO fire_brigade.message (datetime, message, sender, receiver, seen) VALUES('"+date.toString()+"', '"+stringPeices[1]+"', 'fireman', '"+st[1]+"', 'no')") ;
             try {
@@ -165,7 +180,6 @@ class ClientSession {
         }
         else if (stringPeices[0].equals("Messages")){
             ArrayList allMessages = this.user.allMessages(this.username);
-            //stringPeices[1].split(":");
 
             for(int i = 0; i < allMessages.size(); ++i){ // Send user one by one to client from array list
                 try {
